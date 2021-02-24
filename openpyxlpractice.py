@@ -9,7 +9,7 @@ def loadTripleList() -> list :
     triple = {}
     actions = []
 
-    path = "C:\\Users\\Vandré\\Documents\\UAM\Materias\\perez2\\PT\\Data\\Midpoints.xlsx"
+    path = "C:\\Users\\Vandré\\Documents\\UAM\Materias\\perez2\\PT\\Data\\scealextrix\\Midpoints.xlsx"
     wb_obj = openpyxl.load_workbook(path, read_only=True)#, data_only=True)
     sheet_obj = wb_obj.active
 
@@ -40,7 +40,25 @@ def getActionList( tl : list, point : str) -> list:
         return tl["AMP"]
     return None
 
-####################################
+def loadInitialBookends() -> list:
+    action_pairs = []
+    action_pair ={}
+    path = "C:\\Users\\Vandré\\Documents\\UAM\Materias\\perez2\\PT\\Data\\scealextrix\\Midpoints.xlsx"
+    wb_obj = openpyxl.load_workbook(path, read_only=True)#, data_only=True)
+    sheet_obj = wb_obj.active
+
+    for c1,c4 in zip(sheet_obj.iter_rows(min_col = 1, max_col = 1, min_row = 2),
+                     sheet_obj.iter_rows(min_col = 4, max_col = 4, min_row = 2)):
+        action_pair["action"] = c1[0].value 
+        action_pair["renderings"] = [x.strip() for x in c4[0].value.split(',')] 
+        action_pairs.append(action_pair.copy())
+        action_pair.clear()
+    return action_pairs
+
+
+
+
+##################Main routine#########################
 repetitions = set()
 accion_inicial = "preach_to"
 tripleta = "A" + accion_inicial + "B"
@@ -51,9 +69,11 @@ categories = cat.loadCategoryList()
 category = cat.getCategory(categories, accion_inicial)
 characters = char.loadNocList() 
 prog = char.getProg(characters, category)
-A = "_" + prog["Name"] +"_"
-B = "_" + char.getOpp_by_simple(characters, prog)  + "_"
 
+A = " " + prog["Name"] +" "
+B = " " + char.getOpp_by_simple(characters, prog)  + " "
+
+##################Plot Creation#########################
 for x in range(0,10):
     while (True):
         tp = getTriple(accion_inicial, triples)
@@ -78,11 +98,18 @@ for x in range(0,10):
     grammar = tracery.Grammar(rules)
     Mpamp = grammar.flatten("#origin#")
     tripleta += Mpamp
-    #print(BMP+Mpamp)
     accion_inicial = Mpamp.split(",")[2][1:-1]
 
 
-print(tripleta.replace("A", A).replace("B", B))
+#guardar los escodigo para "MP" y "AMP" en un set y luego parsear para reemplazar
+
+######################Printing############################
+
+accion_final = tripleta.split(",")[-1].replace("A","").replace("B","")
+inicial_idiom = "HELLO"
+final_idiom = "adios"
+plot = tripleta.replace("preach_to", inicial_idiom).replace(accion_final, final_idiom).replace("A", A).replace("B", B)
+print(plot)
 
 
 

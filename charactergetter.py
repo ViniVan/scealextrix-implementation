@@ -5,7 +5,7 @@ def loadNocList() -> list:
     characters = []
     character = {}
    
-    path = "C:\\Users\\Vandré\\Documents\\UAM\Materias\\perez2\\PT\\DATA\\NOC.xlsx"
+    path = "C:\\Users\\Vandré\\Documents\\UAM\Materias\\perez2\\PT\\DATA\\scealextrix\\NOC.xlsx"
     wb_obj = openpyxl.load_workbook(path, read_only= 'True' )#, data_only=True)
     sheet_obj = wb_obj.active
     max_rows = sheet_obj.max_row
@@ -49,7 +49,7 @@ def getOpp_by_world(characters:list, prog : dict) -> str:      #aquí hay un pro
         return None
     return random.choice(possible_opps)["Name"]
 
-def getOpp_by_simple(characters : list, prog : dict) -> str:  ##Ojo este regresa str
+def getOpp_by_simple(characters : list, prog : dict) -> str:  
     return random.choice(prog["Opponent"])
     
 ##    

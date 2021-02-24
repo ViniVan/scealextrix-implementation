@@ -6,7 +6,7 @@ def loadCategoryList() -> list:
     triple = {}
     actions = []
     
-    path = "C:\\Users\\Vandré\\Documents\\UAM\Materias\\perez2\\PT\\DATA\\Category.xlsx"
+    path = "C:\\Users\\Vandré\\Documents\\UAM\Materias\\perez2\\PT\\DATA\\scealextrix\\Category.xlsx"
     wb_obj = openpyxl.load_workbook(path, read_only=True)#, data_only=True)
     sheet_obj = wb_obj.active
 
