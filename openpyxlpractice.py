@@ -82,6 +82,26 @@ def getClosingBookend(action_pairs : list, accion_final : str) -> str:
             return random.choice(pair["renderings"])
     return None
 
+def loadIdioms() -> list:
+    action_pairs = []
+    action_pair ={}
+    path = "C:\\Users\\Vandré\\Documents\\UAM\Materias\\perez2\\PT\\Data\\scealextrix\\Idiomatic actions.xlsx"
+    wb_obj = openpyxl.load_workbook(path, read_only=True)#, data_only=True)
+    sheet_obj = wb_obj.active
+
+    for c1,c5 in zip(sheet_obj.iter_rows(min_col = 1, max_col = 1, min_row = 2, max_row = 820),
+                     sheet_obj.iter_rows(min_col = 5, max_col = 5, min_row = 2, max_row = 820)):
+        action_pair["action"] = c1[0].value 
+        action_pair["renderings"] = [x.strip() for x in c5[0].value.split(',')]
+        action_pairs.append(action_pair.copy())
+        action_pair.clear()
+    return action_pairs
+
+def getIdiom(action_pairs : list, accion : str) -> str:
+    for pair in action_pairs:
+        if  (pair["action"] == accion):
+            return random.choice(pair["renderings"])
+    return None
 
 
 
@@ -99,8 +119,8 @@ category = cat.getCategory(categories, accion_inicial)
 characters = char.loadNocList() 
 prog = char.getProg(characters, category)
 
-A = " " + prog["Name"] +" "
-B = " " + char.getOpp_by_simple(characters, prog)  + " "
+A = prog["Name"]
+B = char.getOpp_by_simple(characters, prog) 
 
 ##################Plot Creation#########################
 for x in range(0,10):
@@ -126,7 +146,7 @@ for x in range(0,10):
     grammar = tracery.Grammar(rules)
     Mpamp = grammar.flatten("#origin#")
     tripleta += Mpamp
-    accion_inicial = Mpamp.split(",")[2][1:-1]
+    accion_inicial = Mpamp.split(",")[2][1:-1] 
     MP = Mpamp.split(",")[1][1:-1]
     sel_actions.add(accion_inicial)
     sel_actions.add(MP)
@@ -138,8 +158,16 @@ for x in range(0,10):
 closing = tripleta.split(",")[-1].replace("A","").replace("B","")
 opening_idiom = getInitialBookend(loadInitialBookends(), opening)
 closing_idiom = getClosingBookend(loadClosingBookends(), closing)
-plot = tripleta.replace("Apreach_toB", opening_idiom).replace(closing, closing_idiom).replace("A", A).replace("B", B)
-print(plot)
+plot = tripleta.replace("Apreach_toB", opening_idiom).replace("A"+closing+"B", closing_idiom)
+
+idioms = loadIdioms()
+
+for action in sel_actions:
+    replacement = getIdiom(idioms,action)
+    if (replacement != None):
+        plot = plot.replace("A"+action+"B", replacement)
+
+print(plot.replace("A", A).replace("B", B))
 
 
 
