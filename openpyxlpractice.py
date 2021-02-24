@@ -43,17 +43,44 @@ def getActionList( tl : list, point : str) -> list:
 def loadInitialBookends() -> list:
     action_pairs = []
     action_pair ={}
-    path = "C:\\Users\\Vandré\\Documents\\UAM\Materias\\perez2\\PT\\Data\\scealextrix\\Midpoints.xlsx"
+    path = "C:\\Users\\Vandré\\Documents\\UAM\Materias\\perez2\\PT\\Data\\scealextrix\\Initial bookend actions.xlsx"
     wb_obj = openpyxl.load_workbook(path, read_only=True)#, data_only=True)
     sheet_obj = wb_obj.active
 
-    for c1,c4 in zip(sheet_obj.iter_rows(min_col = 1, max_col = 1, min_row = 2),
-                     sheet_obj.iter_rows(min_col = 4, max_col = 4, min_row = 2)):
+    for c1,c4 in zip(sheet_obj.iter_rows(min_col = 1, max_col = 1, min_row = 2, max_row = 729),
+                     sheet_obj.iter_rows(min_col = 4, max_col = 4, min_row = 2, max_row = 729)):
         action_pair["action"] = c1[0].value 
-        action_pair["renderings"] = [x.strip() for x in c4[0].value.split(',')] 
+        action_pair["renderings"] = [x.strip() for x in c4[0].value.split(',')]
         action_pairs.append(action_pair.copy())
         action_pair.clear()
     return action_pairs
+
+def getInitialBookend(action_pairs : list, accion_inicial : str) -> str:
+    for pair in action_pairs:
+        if(pair["action"] == accion_inicial):
+            return random.choice(pair["renderings"])
+    return None
+
+def loadClosingBookends() -> list:
+    action_pairs = []
+    action_pair ={}
+    path = "C:\\Users\\Vandré\\Documents\\UAM\Materias\\perez2\\PT\\Data\\scealextrix\\Closing bookend actions.xlsx"
+    wb_obj = openpyxl.load_workbook(path, read_only=True)#, data_only=True)
+    sheet_obj = wb_obj.active
+
+    for c1,c4 in zip(sheet_obj.iter_rows(min_col = 1, max_col = 1, min_row = 2, max_row = 244),
+                     sheet_obj.iter_rows(min_col = 3, max_col = 3, min_row = 2, max_row = 244)):
+        action_pair["action"] = c1[0].value 
+        action_pair["renderings"] = [x.strip() for x in c4[0].value.split(',')]
+        action_pairs.append(action_pair.copy())
+        action_pair.clear()
+    return action_pairs
+
+def getClosingBookend(action_pairs : list, accion_final : str) -> str:
+    for pair in action_pairs:
+        if  (pair["action"] == accion_final):
+            return random.choice(pair["renderings"])
+    return None
 
 
 
@@ -61,8 +88,10 @@ def loadInitialBookends() -> list:
 ##################Main routine#########################
 repetitions = set()
 accion_inicial = "preach_to"
+opening = "preach_to"
 tripleta = "A" + accion_inicial + "B"
 triples = loadTripleList()
+sel_actions = set()
 
 ### podria empaquetar estos más... solo get Category u get char
 categories = cat.loadCategoryList()
@@ -85,7 +114,6 @@ for x in range(0,10):
 ##    if tp == None:
 ##       break
     repetitions.add(repetition_index)
-    BMP = accion_inicial
     MPs = getActionList(tp, "MP")
     AMPs = getActionList(tp, "AMP")
 
@@ -99,16 +127,18 @@ for x in range(0,10):
     Mpamp = grammar.flatten("#origin#")
     tripleta += Mpamp
     accion_inicial = Mpamp.split(",")[2][1:-1]
+    MP = Mpamp.split(",")[1][1:-1]
+    sel_actions.add(accion_inicial)
+    sel_actions.add(MP)
 
 
-#guardar los escodigo para "MP" y "AMP" en un set y luego parsear para reemplazar
-
+ 
 ######################Printing############################
 
-accion_final = tripleta.split(",")[-1].replace("A","").replace("B","")
-inicial_idiom = "HELLO"
-final_idiom = "adios"
-plot = tripleta.replace("preach_to", inicial_idiom).replace(accion_final, final_idiom).replace("A", A).replace("B", B)
+closing = tripleta.split(",")[-1].replace("A","").replace("B","")
+opening_idiom = getInitialBookend(loadInitialBookends(), opening)
+closing_idiom = getClosingBookend(loadClosingBookends(), closing)
+plot = tripleta.replace("Apreach_toB", opening_idiom).replace(closing, closing_idiom).replace("A", A).replace("B", B)
 print(plot)
 
 
