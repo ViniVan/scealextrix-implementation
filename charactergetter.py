@@ -10,12 +10,12 @@ def loadNocList() -> list:
     sheet_obj = wb_obj.active
     max_rows = sheet_obj.max_row
 
-    for c1, c8, c10, c15,c22, c23 in zip(sheet_obj.iter_rows(min_col = 1, max_col = 1, min_row = 2),
-                                        sheet_obj.iter_rows(min_col = 8, max_col = 8, min_row = 2),
-                                        sheet_obj.iter_rows(min_col = 10, max_col = 10, min_row = 2),
-                                        sheet_obj.iter_rows(min_col = 15, max_col = 15, min_row = 2),
-                                        sheet_obj.iter_rows(min_col = 22, max_col = 22, min_row = 2),
-                                        sheet_obj.iter_rows(min_col = 23, max_col = 23, min_row = 2)):
+    for c1, c8, c10, c15,c22, c23 in zip(sheet_obj.iter_rows(min_col = 1, max_col = 1, min_row = 2, max_row =1031),
+                                        sheet_obj.iter_rows(min_col = 8, max_col = 8, min_row = 2, max_row =1031),
+                                        sheet_obj.iter_rows(min_col = 10, max_col = 10, min_row = 2, max_row =1031),
+                                        sheet_obj.iter_rows(min_col = 15, max_col = 15, min_row = 2, max_row =1031),
+                                        sheet_obj.iter_rows(min_col = 22, max_col = 22, min_row = 2, max_row =1031),
+                                        sheet_obj.iter_rows(min_col = 23, max_col = 23, min_row = 2, max_row =1031)):
         character["Name"] = c1[0].value
         character["Politics"] = [x.strip() for x in c8[0].value.split(',')]   ## tengo que parsear la lista de nuevo
         character["Opponent"] = [x.strip() for x in c10[0].value.split(',') if x.strip() != "EMPTY"]  ##está en el personaje
@@ -27,8 +27,8 @@ def loadNocList() -> list:
     return characters
 
 
-def getProg(characters : list, category: str) -> dict:
-    possible_progs = [char for char in characters if category in char["Category"]] 
+def getProg(characters : list, category: str) -> dict:  #y si no hay categoria para la accion inicial? mejor llamar est getptog by char
+    possible_progs = [char for char in characters if category in char["Category"]]
     return random.choice(possible_progs)
 
 def getOpp_by_politics(characters : list, prog : dict) -> str:
@@ -49,7 +49,9 @@ def getOpp_by_world(characters:list, prog : dict) -> str:      #aquí hay un pro
         return None
     return random.choice(possible_opps)["Name"]
 
-def getOpp_by_simple(characters : list, prog : dict) -> str:  
+def getOpp_by_simple(characters : list, prog : dict) -> str:
+    if (not prog["Opponent"]):
+        return None
     return random.choice(prog["Opponent"])
     
 ##    

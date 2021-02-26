@@ -24,9 +24,11 @@ def loadCategoryList() -> list:
 def getCategory(catlist : list, accion_inicial : str) -> str:   #solo como sujeto de la acción
     possible_cats = [dic["Category"] for dic in catlist if accion_inicial in dic["Subject"]]
     if (not possible_cats):
+        possible_cats = [dic["Category"] for dic in catlist if accion_inicial in dic["Object"]]
+    if (not possible_cats):
         return None
     return random.choice(possible_cats)
     
 ######################ONLY FOR DEBUGGING############################
-##rows = loadCategoryList()
-##print (getCategory(rows,"preach_to"))
+#rows = loadCategoryList()
+#print (getCategory(rows,"abandon"))

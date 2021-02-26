@@ -3,6 +3,7 @@ import categorygetter as cat
 import charactergetter as char
 import tracery
 import random
+import re
 
 def loadTripleList() -> list :
     triples = []
@@ -107,8 +108,8 @@ def getIdiom(action_pairs : list, accion : str) -> str:
 
 ##################Main routine#########################
 repetitions = set()
-accion_inicial = "preach_to"
-opening = "preach_to"
+accion_inicial = "promote"
+opening = "promote"
 tripleta = "A" + accion_inicial + "B"
 triples = loadTripleList()
 sel_actions = set()
@@ -119,20 +120,30 @@ category = cat.getCategory(categories, accion_inicial)
 characters = char.loadNocList() 
 prog = char.getProg(characters, category)
 
+###################Asignar personajes################
 A = prog["Name"]
-B = char.getOpp_by_simple(characters, prog) 
+B = char.getOpp_by_simple(characters, prog)
+while (B == None):
+    B = char.getOpp_by_simple(characters, prog) ##aquí se puede quedar un ratote
+    #hacer una elección top down desde lo más complicado hasta simple y si no dar un personaje al azar
+
 
 ##################Plot Creation#########################
+no_more = False
+
 for x in range(0,10):
     while (True):
         tp = getTriple(accion_inicial, triples)
+        if (tp == None):
+            no_more = True
+            break
         repetition_index = triples.index(tp)
         ##print(repetition_index) ##for debugging
         ##print(repetitions) 
-        if (repetition_index not in repetitions or tp != None):
+        if (repetition_index not in repetitions):
             break
-##    if tp == None:
-##       break
+    if (no_more == True):
+        break
     repetitions.add(repetition_index)
     MPs = getActionList(tp, "MP")
     AMPs = getActionList(tp, "AMP")
@@ -151,14 +162,11 @@ for x in range(0,10):
     sel_actions.add(accion_inicial)
     sel_actions.add(MP)
 
-
- 
 ######################Printing############################
-
 closing = tripleta.split(",")[-1].replace("A","").replace("B","")
 opening_idiom = getInitialBookend(loadInitialBookends(), opening)
 closing_idiom = getClosingBookend(loadClosingBookends(), closing)
-plot = tripleta.replace("Apreach_toB", opening_idiom).replace("A"+closing+"B", closing_idiom)
+plot = tripleta.replace("A"+opening+"B", opening_idiom).replace("A"+closing+"B", closing_idiom)
 
 idioms = loadIdioms()
 
