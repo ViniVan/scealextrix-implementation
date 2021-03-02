@@ -5,7 +5,6 @@ import tracery
 import random
 import re
 
-#cambio en change to sets
 def loadTripleList() -> list :
     triples = []
     triple = {}

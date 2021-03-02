@@ -21,7 +21,7 @@ def loadCategoryList() -> list:
         actions.clear()
     return triples
 
-def getCategory(accion_inicial : str) -> str:   #solo como sujeto de la acción
+def getCategory(accion_inicial : str) -> str:  
     catlist = loadCategoryList()
     possible_cats = [dic["Category"] for dic in catlist if accion_inicial in dic["Subject"]]
     if (not possible_cats):
