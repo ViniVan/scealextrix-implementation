@@ -30,6 +30,3 @@ def getCategory(accion_inicial : str) -> str:   #solo como sujeto de la acción
         return None
     return random.choice(possible_cats)
     
-######################ONLY FOR DEBUGGING############################
-#rows = loadCategoryList()
-#print (getCategory(rows,"abandon"))

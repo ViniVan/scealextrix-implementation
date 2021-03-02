@@ -30,6 +30,8 @@ characters = loadNocList()
 
 def getProg(category: str) -> dict:  #y si no hay categoria para la accion inicial? mejor llamar est getptog by char
     possible_progs = [char for char in characters if category in char["Category"]]
+    if (not possible_progs):
+        return random.choice(characters)
     return random.choice(possible_progs)
 
 def getOpp_by_politics(prog : dict) -> str:
@@ -55,13 +57,3 @@ def getOpp_by_simple(prog : dict) -> str:
         return None
     return random.choice(prog["Opponent"])
     
-##    
-##chars = loadNocList()
-###print(chars)
-##prog = getProg(chars, "Economist")
-###opp = getOpp_by_politics(chars, prog)
-###opp = getOpp_by_domain(chars,prog)
-##opp = getOpp_by_world(chars, prog)
-###opp = getOpp_by_simple(chars, prog)
-##print(prog["Name"])
-##print(opp)
