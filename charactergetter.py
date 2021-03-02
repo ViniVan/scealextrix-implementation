@@ -26,12 +26,13 @@ def loadNocList() -> list:
         character.clear()
     return characters
 
+characters = loadNocList()
 
-def getProg(characters : list, category: str) -> dict:  #y si no hay categoria para la accion inicial? mejor llamar est getptog by char
+def getProg(category: str) -> dict:  #y si no hay categoria para la accion inicial? mejor llamar est getptog by char
     possible_progs = [char for char in characters if category in char["Category"]]
     return random.choice(possible_progs)
 
-def getOpp_by_politics(characters : list, prog : dict) -> str:
+def getOpp_by_politics(prog : dict) -> str:
     if ("left" in prog["Politics"]):
         politics = "right"
     else:
@@ -39,17 +40,17 @@ def getOpp_by_politics(characters : list, prog : dict) -> str:
     possible_opps = [opp for opp in characters if politics in opp["Politics"]]
     return random.choice(possible_opps)["Name"]
 
-def getOpp_by_domain(characters:list, prog : dict) -> str:
+def getOpp_by_domain(prog : dict) -> str:
     possible_opps = [opp for opp in characters if any(domain in prog["Domains"] for domain in opp["Domains"])]
     return random.choice(possible_opps)["Name"]
 
-def getOpp_by_world(characters:list, prog : dict) -> str:      #aquí hay un problemas con las celdas EMpTY
+def getOpp_by_world(prog : dict) -> str:      #aquí hay un problemas con las celdas EMpTY
     possible_opps = [opp for opp in characters if any(world in prog["World"] for world in opp["World"])]
     if (not possible_opps):
         return None
     return random.choice(possible_opps)["Name"]
 
-def getOpp_by_simple(characters : list, prog : dict) -> str:
+def getOpp_by_simple(prog : dict) -> str:
     if (not prog["Opponent"]):
         return None
     return random.choice(prog["Opponent"])
