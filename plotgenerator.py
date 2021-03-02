@@ -57,7 +57,8 @@ def loadInitialBookends() -> list:
         action_pair.clear()
     return action_pairs
 
-def getInitialBookend(action_pairs : list, accion_inicial : str) -> str:
+def getInitialBookend(accion_inicial : str) -> str:
+    action_pairs = loadInitialBookends()
     for pair in action_pairs:
         if(pair["action"] == accion_inicial):
             return random.choice(pair["renderings"])
@@ -78,7 +79,8 @@ def loadClosingBookends() -> list:
         action_pair.clear()
     return action_pairs
 
-def getClosingBookend(action_pairs : list, accion_final : str) -> str:
+def getClosingBookend(accion_final : str) -> str:
+    action_pairs = loadClosingBookends()
     for pair in action_pairs:
         if  (pair["action"] == accion_final):
             return random.choice(pair["renderings"])
@@ -99,7 +101,8 @@ def loadIdioms() -> list:
         action_pair.clear()
     return action_pairs
 
-def getIdiom(action_pairs : list, accion : str) -> str:
+def getIdiom(accion : str) -> str:
+    action_pairs = loadIdioms()
     for pair in action_pairs:
         if  (pair["action"] == accion):
             return random.choice(pair["renderings"])
@@ -107,7 +110,7 @@ def getIdiom(action_pairs : list, accion : str) -> str:
 
 
 
-##################Main routine#########################
+##################Rutina principal#########################
 repetitions = set()
 accion_inicial = "promote"
 opening = "promote"
@@ -115,21 +118,18 @@ tripleta = "A" + accion_inicial + "B"
 triples = loadTripleList()
 sel_actions = set()
 
-### podria empaquetar estos más... solo get Category u get char
-categories = cat.loadCategoryList()
-category = cat.getCategory(categories, accion_inicial)
-characters = char.loadNocList() 
-prog = char.getProg(characters, category)
+#################Cargar categorías####################
+category = cat.getCategory(accion_inicial)
+prog = char.getProg(category)
 
 ###################Asignar personajes################
 A = prog["Name"]
-B = char.getOpp_by_simple(characters, prog)
+B = char.getOpp_by_simple(prog)
 while (B == None):
-    B = char.getOpp_by_simple(characters, prog) ##aquí se puede quedar un ratote
+    B = char.getOpp_by_simple(prog) ##aquí se puede quedar un ratote
     #hacer una elección top down desde lo más complicado hasta simple y si no dar un personaje al azar
 
-
-##################Plot Creation#########################
+##################Creación de Trama#########################
 no_more = False
 
 for x in range(0,10):
@@ -165,14 +165,19 @@ for x in range(0,10):
 
 ######################Printing############################
 closing = tripleta.split(",")[-1].replace("A","").replace("B","")
-opening_idiom = getInitialBookend(loadInitialBookends(), opening)
-closing_idiom = getClosingBookend(loadClosingBookends(), closing)
+print("opening: " + opening)
+print ("closing: " + closing)
+opening_idiom = getInitialBookend(opening)
+closing_idiom = getClosingBookend(closing)
+if opening_idiom == None:
+    opening_idiom = getIdiom(opening)
+if closing_idiom == None:
+    closing_idiom = getIdiom(closing)
+
 plot = tripleta.replace("A"+opening+"B", opening_idiom).replace("A"+closing+"B", closing_idiom)
 
-idioms = loadIdioms()
-
 for action in sel_actions:
-    replacement = getIdiom(idioms,action)
+    replacement = getIdiom(action)
     if (replacement != None):
         plot = plot.replace("A"+action+"B", replacement)
 
