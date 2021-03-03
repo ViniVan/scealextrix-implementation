@@ -5,6 +5,7 @@ import tracery
 import random
 import re
 
+
 def loadTripleList() -> list :
     triples = []
     triple = {}
@@ -131,8 +132,8 @@ def main() :
     sel_actions = set()
     triples = loadTripleList()
     connector_list = loadConnectors()
-    accion_inicial = "are_escorted_by"
-    opening = "are_escorted_by"
+    accion_inicial = "hire"
+    opening = "hire"
     plot = "A" + accion_inicial + "B"
 
     ################# Load Category and Characters ####################
@@ -140,14 +141,21 @@ def main() :
     protagonist= char.getProg(category)
     A = protagonist["Name"]
     B = char.getOpp_by_simple(protagonist)
-    while (B == None):
-        B = char.getOpp_by_simple(protagonist) ##aquí se puede quedar un ratote
-        #hacer una elección top down desde lo más complicado hasta simple y si no dar un personaje al azar
+    if (B == None):
+        B = char.getOpp_by_world(protagonist)
+    if (B == None):
+        B = char.getOpp_by_politics(protagonist)
+    if (B == None):
+        B =  char.getOpp_by_world(protagonist)
+    if (B == None):
+        B = char.getProg(category)
+        while (B == A):
+            B = char.getProg(category)
 
     ##################Creación de Trama#########################
     as_beginning = True
 
-    for x in range(0,10):
+    for x in range(0,4):
         while (True):
             tp = getTriple(accion_inicial, triples)
             if (tp == None):
@@ -181,7 +189,7 @@ def main() :
         for connector in connector_list:
             if (action_pair == connector['pair']):
                 plot.replace(accion_inicial, accion_inicial + connector['link'])
-        plot = plot.replace(",",". ")
+        plot = plot.replace(",",".")
 
     ######################Printing############################
     closing = accion_inicial
@@ -199,7 +207,7 @@ def main() :
         if (replacement != None):
             plot = plot.replace("A"+action+"B", replacement)
 
-    print(plot.replace("A", A).replace("B", B))
+    print(plot.replace("A", A).replace("B", B).replace(".", ".\n"))
 
 
 main()
