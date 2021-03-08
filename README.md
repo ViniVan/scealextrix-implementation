@@ -8,5 +8,7 @@ Se requieren de los siguientes modulos Python:
 -openpyxl
 -newsapi 
 
+Los libros de texto fueron modificados y se necesitan de esa manera para esta implementación.
+
 
 
