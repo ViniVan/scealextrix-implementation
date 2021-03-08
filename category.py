@@ -1,0 +1,33 @@
+import openpyxl
+import random
+import os
+
+def loadCategoryList() -> list:
+    triples = []
+    triple = {}
+    actions = []
+    
+    path = os.path.join(os.path.dirname(__file__),"Category.xlsx")
+    wb_obj = openpyxl.load_workbook(path, read_only=True)#, data_only=True)
+    sheet_obj = wb_obj.active
+
+    for row in sheet_obj.iter_rows(min_row = 2, min_col = 2, max_col = 4 , max_row = 400):
+        for cell in row:
+            actions.append([x.strip() for x in cell.value.split(',')])
+        triple["Category"] = actions[0][0]
+        triple["Subject"] = actions[1] 
+        triple["Object"] = actions[2] 
+        triples.append(triple.copy())
+        triple.clear()
+        actions.clear()
+    return triples
+
+def getCategory(accion_inicial : str) -> str:  
+    catlist = loadCategoryList()
+    possible_cats = [dic["Category"] for dic in catlist if accion_inicial in dic["Subject"]]
+    if (not possible_cats):
+        possible_cats = [dic["Category"] for dic in catlist if accion_inicial in dic["Object"]]
+    if (not possible_cats):
+        return None
+    return random.choice(possible_cats)
+    
